@@ -296,7 +296,7 @@ class SqlAlchemyApi(Api):
 
     if connection:
       cursor = connection['result'].cursor
-      if self.options['url'].startswith('presto://') and cursor and cursor.poll():
+      if self.options['url'].startswith('presto://') and cursor and cursor._state == cursor._STATE_RUNNING:
         response['status'] = 'running'
       elif snippet['result']['handle']['has_result_set']:
         response['status'] = 'available'
@@ -307,19 +307,25 @@ class SqlAlchemyApi(Api):
 
     return response
 
+
   @query_error_handler
   def progress(self, notebook, snippet, logs=''):
+    progress = 50
     if self.options['url'].startswith('presto://'):
       guid = snippet['result']['handle']['guid']
       handle = CONNECTIONS.get(guid)
-      if not handle:
-        return 50
-      stats = handle['result'].cursor.poll()
-      if not stats:
-        return 100
-      stats = stats.get('stats', {})
-      return stats.get('completedSplits', 0) * 100 // stats.get('totalSplits', 1)
-    return 50
+      stats = None
+      progress = 100
+      try:
+        if handle:
+          stats = handle['result'].cursor.poll()
+      except AssertionError as e:
+        LOG.warn('Query probably not running anymore: %s' % e)
+      if stats:
+        stats = stats.get('stats', {})
+        progress = stats.get('completedSplits', 0) * 100 // stats.get('totalSplits', 1)
+    return progress
+
 
   @query_error_handler
   def fetch_result(self, notebook, snippet, rows, start_over):
@@ -340,6 +346,7 @@ class SqlAlchemyApi(Api):
       'type': 'table'
     }
 
+
   def _assign_types(self, results, meta):
     result = results and results[0]
     if result:
@@ -356,6 +363,7 @@ class SqlAlchemyApi(Api):
           meta[index]['type'] = 'TIMESTAMP_TYPE'
         else:
           meta[index]['type'] = 'STRING_TYPE'
+
 
   @query_error_handler
   def fetch_result_metadata(self):
