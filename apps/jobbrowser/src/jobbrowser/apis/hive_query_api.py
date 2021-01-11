@@ -29,6 +29,7 @@ from desktop.lib.rest.http_client import HttpClient
 from desktop.lib.rest.resource import Resource
 from notebook.models import _get_notebook_api, make_notebook, MockRequest
 
+
 from jobbrowser.apis.base_api import Api
 from jobbrowser.conf import QUERY_STORE
 from jobbrowser.models import HiveQuery
@@ -121,8 +122,7 @@ class HiveQueryApi(Api):
         action_details = {}
 
         try:
-          request = MockRequest(user=self.user)
-          self.kill_query(query_id, request)
+          self.kill_query(query_id)
           action_details['status'] = 0
           action_details['message'] = _('kill action performed')
         except Exception as ex:
@@ -135,7 +135,7 @@ class HiveQueryApi(Api):
 
     return message
 
-  def kill_query(self, query_id, request):
+  def kill_query(self, query_id):
     kill_sql = 'KILL QUERY "%s";' % query_id
     job = make_notebook(
         name=_('Kill query %s') % query_id,
@@ -146,7 +146,7 @@ class HiveQueryApi(Api):
         is_task=False,
     )
 
-    job.execute_and_wait(request)
+    job.execute_and_wait(MockRequest(user=self.user))
 
   def logs(self, appid, app_type, log_name=None, is_embeddable=False):
     return {'logs': ''}

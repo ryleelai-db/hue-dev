@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.161",
-    "axios": "0.20.0",
+    "axios": "0.21.1",
     "clipboard": "1.7.1",
     "core-js": "^3.4.2",
     "d3": "5.7.0",
@@ -82,6 +82,7 @@
     "vue": "2.6.11",
     "vue-class-component": "7.2.3",
     "vue-custom-element": "3.2.14",
+    "vue-fragment": "1.5.1",
     "vue-property-decorator": "9.0.0",
     "vue-template-compiler": "2.6.11",
     "vuejs-datepicker": "1.6.2"

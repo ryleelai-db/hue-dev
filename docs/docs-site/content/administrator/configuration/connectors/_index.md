@@ -108,6 +108,8 @@ In order to prevent spamming zookeeper, HiveServer2 is cached for the life of th
 
 ### Apache Impala
 
+This [Impala SQL Editor](https://gethue.com/blog/quickstart-sql-editor-for-apache-impala/) post demoes the integration.
+
 Support is native via a dedicated section.
 
     [impala]
@@ -149,14 +151,20 @@ Alternative:
 
 ### Presto
 
+Formerly known as PrestoSQL and now called [Trino](#trino).
+
+### Trino
+
+Formerly known as PrestoSQL (hence still having 'presto' name in several parameters).
+
 The dialect should be added to the Python system or Hue Python virtual environment:
 
     ./build/env/bin/pip install pyhive
 
-Then give Hue the information about the database source following the `presto://{presto-coordinator}:{port}/{catalog}/{schema}` format:
+Then give Hue the information about the database source following the `presto://{trino-coordinator}:{port}/{catalog}/{schema}` format:
 
     [[[presto]]]
-    name = Presto
+    name = Trino
     interface=sqlalchemy
     options='{"url": "presto://localhost:8080/tpch/default"}'
 
@@ -189,7 +197,7 @@ Alternative interfaces.
 Direct:
 
     [[[presto]]]
-    name=Presto SQL
+    name=Trino
     interface=presto
     ## Specific options for connecting to the Presto server.
     ## To connect to Presto over HTTPS/SSL you will need to construct connection string like below:
@@ -200,10 +208,10 @@ Direct:
 
 JDBC:
 
-The client driver is maintained by the Presto Team and can be downloaded here: https://prestosql.io/docs/current/installation/jdbc.html
+The client driver is maintained by the Presto Team and can be downloaded here: https://trino.io/docs/current/installation/jdbc.html
 
     [[[presto]]]
-    name=Presto JDBC
+    name=Trino JDBC
     interface=jdbc
     options='{"url": "jdbc:presto://localhost:8080/", "driver": "io.prestosql.jdbc.PrestoDriver"}'
 
@@ -218,7 +226,8 @@ Then give Hue the information about the database source:
     [[[oracle]]]
     name = Oracle
     interface=sqlalchemy
-    options='{"url": "oracle://scott:tiger@dsn"}'
+    options='{"url": "oracle://user:password@localhost"}'
+
 
 ### PostgreSQL
 
@@ -233,7 +242,7 @@ Then give Hue the information about the database source:
     [[[postgresql]]]
     name = PostgreSql
     interface=sqlalchemy
-    options='{"url": "postgresql+psycopg2://user:password@host:31335/database"}'
+    options='{"url": "postgresql+psycopg2://user:password@localhost:31335/database"}'
 
 
 ### AWS Athena
@@ -259,7 +268,7 @@ Note: Keys and S3 buckets need to be URL quoted but Hue does it automatically fo
 
 ### Apache Phoenix
 
-This [SQL Editor with Phoenix](https://gethue.com/sql-querying-apache-hbase-with-apache-phoenix/) post demoes the integration.
+This [Phoenix SQL Editor](https://gethue.com/sql-querying-apache-hbase-with-apache-phoenix/) post demoes the integration.
 
 The official Phoenix dialect is already shipped in Hue. However if you want to update it yourself:
 
@@ -316,7 +325,7 @@ With impersonation:
 
 ### Apache Druid
 
-This [SQL Editor with Druid](https://gethue.com/quick-task-how-to-query-apache-druid-analytic-database/) post demoes the integration.
+This [Druid SQL Editor](https://gethue.com/quick-task-how-to-query-apache-druid-analytic-database/) post demoes the integration.
 
 First, make sure that Hue can talk to Druid via the [pydruid SqlAlchemy connector](https://github.com/druid-io/pydruid).
 
@@ -339,7 +348,7 @@ Adding the `+https` prefix will use HTTPS e.g.:
 
 ### Apache Flink
 
-This [Stream SQL Editor with Flink](https://gethue.com/blog/tutorial-query-live-data-stream-with-flink-sql/) post demoes the integration.
+This [Flink Stream SQL Editor](https://gethue.com/blog/tutorial-query-live-data-stream-with-flink-sql/) post demoes the integration.
 
 The dialect currently requires the [Flink SQL Gateway](https://github.com/ververica/flink-sql-gateway/releases) in order to submit queries.
 
@@ -357,7 +366,7 @@ Then add a Flink interpreter in the Hue configuration:
 
 ### ksqlDB
 
-This [Stream SQL Editor with ksqlDB](https://gethue.com/blog/tutorial-query-live-data-stream-with-kafka-sql/) post demoes the integration.
+This [ksqlDB Stream SQL Editor](https://gethue.com/blog/tutorial-query-live-data-stream-with-kafka-sql/) post demoes the integration.
 
 The ksql Python module should be added to the system or Hue Python virtual environment:
 
@@ -409,6 +418,24 @@ Supporting additional [connection parameters](https://github.com/mxmzdlv/pybigqu
       options='{"url": "bigquery://", "use_query_cache": "true"}'
 
 
+### Materialize
+
+The dialect should be added to the Python system or Hue Python virtual environment:
+
+    ./build/env/bin/pip install psycopg2
+
+      or
+
+    ./build/env/bin/pip install psycopg2-binary
+
+Then give Hue the information about the database source:
+
+    [[[postgresql]]]
+    name = Materialize
+    interface=sqlalchemy
+    options='{"url": "postgresql://user:password@localhost:6875/"}'
+
+
 ### Teradata
 
 The dialect should be added to the Python system or Hue Python virtual environment:
@@ -420,7 +447,7 @@ Then give Hue the information about the database source:
     [[[teradata]]]
     name = Teradata
     interface=sqlalchemy
-    options='{"url": "teradata://user:pw@host"}'
+    options='{"url": "teradata://user:password@localhost"}'
 
 Alternative:
 
@@ -442,7 +469,7 @@ Then give Hue the information about the database source:
     [[[db2]]]
     name = DB2
     interface=sqlalchemy
-    options='{"url": "db2+ibm_db://user:pass@host[:port]/database"}'
+    options='{"url": "db2+ibm_db://user:password@hostname[:port]/database"}'
 
 Alternative:
 
@@ -453,7 +480,7 @@ Alternative:
 
 ### Apache Spark SQL
 
-This [SQL Editor for Spark SQL](https://gethue.com/blog/querying-spark-sql-with-spark-thrift-server-and-hue-editor/) post demoes the integration.
+This [Spark SQL Editor](https://gethue.com/blog/querying-spark-sql-with-spark-thrift-server-and-hue-editor/) post demoes the integration.
 
 There are two ways to connect depending on your infrastructure:
 
@@ -481,7 +508,7 @@ Then give Hue the information about the database source:
     [[[sparksql]]]
     name=Spark SQL
     interface=sqlalchemy
-    options='{"url": "hive://user:password@host:10000/database"}'
+    options='{"url": "hive://user:password@localhost:10000/database"}'
 
 ##### Distributed SQL Engine / Thrift Server
 
@@ -570,7 +597,7 @@ Then give Hue the information about the database source:
     [[[vertica]]]
     name = Vertica
     interface=sqlalchemy
-    options='{"url": "vertica+vertica_python://user:pwd@host:port/database"}'
+    options='{"url": "vertica+vertica_python://user:pwd@localhost:port/database"}'
 
 Alternative:
 
@@ -847,7 +874,7 @@ Then give Hue the information about the database source:
     [[[greenplum]]]
     name = Greenplum
     interface=sqlalchemy
-    options='{"url": "postgresql+psycopg2://user:password@host:31335/database"}'
+    options='{"url": "postgresql+psycopg2://user:password@localhost:31335/database"}'
 
 
 ## Storage

@@ -38,6 +38,7 @@ CONNECTOR_TYPES = [
       {'name': 'server_host', 'value': 'localhost'},
       {'name': 'server_port', 'value': 10000},
       {'name': 'is_llap', 'value': False},  # cf. _get_session_by_id() or create a separate connector
+      {'name': 'use_sasl', 'value': True},
     ],
     'properties': {
       'is_sql': True,
@@ -66,6 +67,7 @@ CONNECTOR_TYPES = [
       {'name': 'url', 'value': 'hive://localhost:10000'},
       {'name': 'has_ssh', 'value': False},
       {'name': 'ssh_server_host', 'value': '127.0.0.1'},
+      {'name': 'use_sasl', 'value': True},
     ],
     'properties': {
       'is_sql': True,
@@ -92,6 +94,7 @@ CONNECTOR_TYPES = [
       {'name': 'server_host', 'value': 'localhost'},
       {'name': 'server_port', 'value': 21050},
       {'name': 'impersonation_enabled', 'value': False},
+      {'name': 'use_sasl', 'value': False},
     ],
     'category': 'editor',
     'description': '',
@@ -234,6 +237,7 @@ CONNECTOR_TYPES = [
       {'name': 'impersonation_enabled', 'value': False},
       {'name': 'has_ssh', 'value': False},
       {'name': 'ssh_server_host', 'value': '127.0.0.1'},
+      {'name': 'use_sasl', 'value': True},
     ],
     'category': 'editor',
     'description': 'Via Thrift Server and Hive interface',
@@ -367,7 +371,7 @@ CONNECTOR_TYPES = [
     }
   },
   {
-    'nice_name': 'Presto',
+    'nice_name': 'Trino (Presto SQL)',
     'dialect': 'presto',
     'interface': 'sqlalchemy',
     'settings': [
