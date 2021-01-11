@@ -273,7 +273,7 @@ class AllowFirstUserDjangoBackend(django.contrib.auth.backends.ModelBackend):
   Allows the first user in, but otherwise delegates to Django's
   ModelBackend.
   """
-  def authenticate(self, username=None, email=None, password=None):
+  def authenticate(self, request, username=None, email=None, password=None):
     if email is not None:
       username = email
     username = force_username_case(username)
@@ -315,7 +315,7 @@ class ImpersonationBackend(django.contrib.auth.backends.ModelBackend):
   Authenticate with a proxy user username/password but then login as another user.
   Does not support a multiple backends setup.
   """
-  def authenticate(self, username=None, password=None, login_as=None):
+  def authenticate(self, request, username=None, password=None, login_as=None):
     if not login_as:
       return
 
