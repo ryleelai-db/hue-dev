@@ -23,6 +23,7 @@ import { AutocompleteParser, SqlParserProvider, SyntaxParser } from 'parse/types
 const AUTOCOMPLETE_MODULES = {
   calcite: () => import(/* webpackChunkName: "calcite-parser" */ 'parse/sql/calcite/calciteAutocompleteParser'),
   dasksql: () => import(/* webpackChunkName: "dasksql-parser" */ 'parse/sql/dasksql/dasksqlAutocompleteParser'),
+  databricks: () => import(/* webpackChunkName: "databricks-parser" */ 'parse/sql/databricks/databricksAutocompleteParser'),
   druid: () => import(/* webpackChunkName: "druid-parser" */ 'parse/sql/druid/druidAutocompleteParser'),
   elasticsearch: () => import(/* webpackChunkName: "elasticsearch-parser" */ 'parse/sql/elasticsearch/elasticsearchAutocompleteParser'),
   flink: () => import(/* webpackChunkName: "flink-parser" */ 'parse/sql/flink/flinkAutocompleteParser'),
@@ -36,6 +37,7 @@ const AUTOCOMPLETE_MODULES = {
 const SYNTAX_MODULES = {
   calcite: () => import(/* webpackChunkName: "calcite-parser" */ 'parse/sql/calcite/calciteSyntaxParser'),
   dasksql: () => import(/* webpackChunkName: "dasksql-parser" */ 'parse/sql/dasksql/dasksqlSyntaxParser'),
+  databricks: () => import(/* webpackChunkName: "databricks-parser" */ 'parse/sql/databricks/databricksSyntaxParser'),
   druid: () => import(/* webpackChunkName: "druid-parser" */ 'parse/sql/druid/druidSyntaxParser'),
   elasticsearch: () => import(/* webpackChunkName: "elasticsearch-parser" */ 'parse/sql/elasticsearch/elasticsearchSyntaxParser'),
   flink: () => import(/* webpackChunkName: "flink-parser" */ 'parse/sql/flink/flinkSyntaxParser'),

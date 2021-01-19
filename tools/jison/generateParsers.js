@@ -17,6 +17,8 @@
 /* eslint-disable no-restricted-syntax */
 
 const fs = require('fs');
+const fse = require('fs-extra');
+const path = require('path');
 const cli = require('jison/lib/cli');
 
 const LICENSE =
@@ -142,13 +144,18 @@ const writeFile = (path, contents) =>
 
 const copyFile = (source, destination, contentsCallback) =>
   new Promise((resolve, reject) => {
-    readFile(source)
-      .then(contents => {
-        writeFile(destination, contentsCallback ? contentsCallback(contents) : contents)
-          .then(resolve)
-          .catch(reject);
-      })
-      .catch(reject);
+    if (fs.statSync(source).isFile()) {
+      fse.ensureDirSync(path.dirname(destination));
+      readFile(source)
+        .then(contents => {
+          writeFile(destination, contentsCallback ? contentsCallback(contents) : contents)
+            .then(resolve)
+            .catch(reject);
+        })
+        .catch(reject);
+    } else {
+      resolve();
+    }
   });
 
 const deleteFile = path => {
@@ -234,6 +241,14 @@ const listDir = folder =>
     });
   });
 
+function listDirRecursive(dir, current = '') {
+  const dirents = fs.readdirSync(dir, { withFileTypes: true });
+  const files = dirents.map(dirent => {
+    const res = [current, dirent.name].filter(Boolean).join('/');
+    return dirent.isDirectory() ? listDirRecursive(path.join(dir, dirent.name), res) : res;
+  });
+  return Array.prototype.concat(...files);
+}
 const addParserDefinition = (sources, dialect, autocomplete, lexer) => {
   const parserName = dialect + (autocomplete ? 'AutocompleteParser' : 'SyntaxParser');
 
@@ -357,42 +372,39 @@ const prepareForNewParser = () =>
               .then(() => {
                 mkdir(JISON_FOLDER + 'sql/' + target)
                   .then(() => {
-                    listDir(JISON_FOLDER + 'sql/' + source).then(files => {
-                      const copyPromises = [];
-                      files.forEach(file => {
-                        copyPromises.push(
-                          copyFile(
-                            JISON_FOLDER + 'sql/' + source + '/' + file,
-                            JISON_FOLDER + 'sql/' + target + '/' + file
-                          )
-                        );
-                      });
-                      Promise.all(copyPromises).then(() => {
-                        const autocompleteSources = [
-                          'sql/' + target + '/autocomplete_header.jison'
-                        ];
-                        const syntaxSources = ['sql/' + target + '/syntax_header.jison'];
+                    const files = listDirRecursive(JISON_FOLDER + 'sql/' + source);
+                    const copyPromises = [];
+                    files.forEach(file => {
+                      copyPromises.push(
+                        copyFile(
+                          JISON_FOLDER + 'sql/' + source + '/' + file,
+                          JISON_FOLDER + 'sql/' + target + '/' + file
+                        )
+                      );
+                    });
+                    Promise.all(copyPromises).then(() => {
+                      const autocompleteSources = ['sql/' + target + '/autocomplete_header.jison'];
+                      const syntaxSources = ['sql/' + target + '/syntax_header.jison'];
 
-                        files.forEach(file => {
-                          if (file.indexOf('sql_') === 0) {
-                            autocompleteSources.push('sql/' + target + '/' + file);
-                            syntaxSources.push('sql/' + target + '/' + file);
-                          }
-                        });
-                        autocompleteSources.push('sql/' + target + '/autocomplete_footer.jison');
-                        syntaxSources.push('sql/' + target + '/syntax_footer.jison');
-                        mkdir(PARSER_FOLDER + target).then(() => {
-                          copyFile(
-                            PARSER_FOLDER + source + '/sqlParseSupport.js',
-                            PARSER_FOLDER + target + '/sqlParseSupport.js',
-                            contents =>
-                              contents.replace(
-                                /parser\.yy\.activeDialect = '[^']+';'/g,
-                                "parser.yy.activeDialect = '" + target + "';"
-                              )
-                          ).then(() => {
-                            identifySqlParsers().then(resolve).catch(reject);
-                          });
+                      files.forEach(file => {
+                        if (file.indexOf('sql_') === 0) {
+                          autocompleteSources.push('sql/' + target + '/' + file);
+                          syntaxSources.push('sql/' + target + '/' + file);
+                        }
+                      });
+                      autocompleteSources.push('sql/' + target + '/autocomplete_footer.jison');
+                      syntaxSources.push('sql/' + target + '/syntax_footer.jison');
+                      mkdir(PARSER_FOLDER + target).then(() => {
+                        copyFile(
+                          PARSER_FOLDER + source + '/sqlParseSupport.js',
+                          PARSER_FOLDER + target + '/sqlParseSupport.js',
+                          contents =>
+                            contents.replace(
+                              /parser\.yy\.activeDialect = '[^']+';'/g,
+                              "parser.yy.activeDialect = '" + target + "';"
+                            )
+                        ).then(() => {
+                          identifySqlParsers().then(resolve).catch(reject);
                         });
                       });
                     });
