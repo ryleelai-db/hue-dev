@@ -14,10 +14,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import hiveAutocompleteParser from '../hiveAutocompleteParser';
-describe('hiveAutocompleteParser.js SELECT statements', () => {
+import databricksAutocompleteParser from '../databricksAutocompleteParser';
+describe('databricksAutocompleteParser.js SELECT statements', () => {
   beforeAll(() => {
-    hiveAutocompleteParser.yy.parseError = function (msg) {
+    databricksAutocompleteParser.yy.parseError = function (msg) {
       throw Error(msg);
     };
   });
@@ -26,7 +26,7 @@ describe('hiveAutocompleteParser.js SELECT statements', () => {
     const debug = false;
 
     expect(
-      hiveAutocompleteParser.parseSql(
+      databricksAutocompleteParser.parseSql(
         testDefinition.beforeCursor,
         testDefinition.afterCursor,
         debug
@@ -2287,20 +2287,20 @@ describe('hiveAutocompleteParser.js SELECT statements', () => {
               location: { first_line: 1, last_line: 1, first_column: 8, last_column: 10 },
               identifierChain: [{ name: 'db' }]
             },
-            // {
-            //   type: 'function',
-            //   location: { first_line: 1, last_line: 1, first_column: 11, last_column: 19 },
-            //   identifierChain: [{ name: 'db' }, { name: 'customUdf' }],
-            //   function: 'customudf'
-            // },
-            // {
-            //   type: 'functionArgument',
-            //   location: { first_line: 1, last_line: 1, first_column: 21, last_column: 24 },
-            //   function: 'customudf',
-            //   argumentPosition: 0,
-            //   identifierChain: [{ name: 'db' }, { name: 'customUdf' }],
-            //   expression: { types: ['COLREF'], columnReference: [{ name: 'col' }] }
-            // },
+            {
+              type: 'function',
+              location: { first_line: 1, last_line: 1, first_column: 11, last_column: 19 },
+              identifierChain: [{ name: 'db' }, { name: 'customUdf' }],
+              function: 'customudf'
+            },
+            {
+              type: 'functionArgument',
+              location: { first_line: 1, last_line: 1, first_column: 21, last_column: 24 },
+              function: 'customudf',
+              argumentPosition: 0,
+              identifierChain: [{ name: 'db' }, { name: 'customUdf' }],
+              expression: { types: ['COLREF'], columnReference: [{ name: 'col' }] }
+            },
             {
               type: 'column',
               location: { first_line: 1, last_line: 1, first_column: 21, last_column: 24 },
@@ -2328,45 +2328,45 @@ describe('hiveAutocompleteParser.js SELECT statements', () => {
       });
     });
 
-    // it('should suggest columns for "SELECT db.customUdf(| FROM bar;"', () => {
-    //   assertAutoComplete({
-    //     beforeCursor: 'SELECT db.customUdf(',
-    //     afterCursor: ' FROM bar;',
-    //     containsKeywords: ['CASE'],
-    //     expectedResult: {
-    //       lowerCase: false,
-    //       suggestFunctions: {},
-    //       suggestColumns: {
-    //         source: 'select',
-    //         tables: [{ identifierChain: [{ name: 'bar' }] }]
-    //       },
-    //       udfArgument: {
-    //         name: 'customudf',
-    //         position: 1
-    //       }
-    //     }
-    //   });
-    // });
+    it('should suggest columns for "SELECT db.customUdf(| FROM bar;"', () => {
+      assertAutoComplete({
+        beforeCursor: 'SELECT db.customUdf(',
+        afterCursor: ' FROM bar;',
+        containsKeywords: ['CASE'],
+        expectedResult: {
+          lowerCase: false,
+          suggestFunctions: {},
+          suggestColumns: {
+            source: 'select',
+            tables: [{ identifierChain: [{ name: 'bar' }] }]
+          },
+          udfArgument: {
+            name: 'customudf',
+            position: 1
+          }
+        }
+      });
+    });
 
-    // it('should suggest columns for "SELECT db.customUdf(1, | FROM bar;"', () => {
-    //   assertAutoComplete({
-    //     beforeCursor: 'SELECT db.customUdf(1, ',
-    //     afterCursor: ' FROM bar;',
-    //     containsKeywords: ['CASE'],
-    //     expectedResult: {
-    //       lowerCase: false,
-    //       suggestFunctions: {},
-    //       suggestColumns: {
-    //         source: 'select',
-    //         tables: [{ identifierChain: [{ name: 'bar' }] }]
-    //       },
-    //       udfArgument: {
-    //         name: 'customudf',
-    //         position: 2
-    //       }
-    //     }
-    //   });
-    // });
+    it('should suggest columns for "SELECT db.customUdf(1, | FROM bar;"', () => {
+      assertAutoComplete({
+        beforeCursor: 'SELECT db.customUdf(1, ',
+        afterCursor: ' FROM bar;',
+        containsKeywords: ['CASE'],
+        expectedResult: {
+          lowerCase: false,
+          suggestFunctions: {},
+          suggestColumns: {
+            source: 'select',
+            tables: [{ identifierChain: [{ name: 'bar' }] }]
+          },
+          udfArgument: {
+            name: 'customudf',
+            position: 2
+          }
+        }
+      });
+    });
 
     it('should suggest keywords for "SELECT extract(| FROM bar;"', () => {
       assertAutoComplete({
@@ -4165,23 +4165,6 @@ describe('hiveAutocompleteParser.js SELECT statements', () => {
       });
     });
 
-    it('should suggest columns for "SELECT * FROM tbl1, tbl2 atbl2, tbl3 WHERE cos(1) = atbl2.bla.|"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT * FROM tbl1, tbl2 atbl2, tbl3 WHERE cos(1) = atbl2.bla.',
-        afterCursor: '',
-        expectedResult: {
-          lowerCase: false,
-          suggestColumns: {
-            source: 'where',
-            types: ['UDFREF'],
-            udfRef: 'cos',
-            identifierChain: [{ name: 'bla' }],
-            tables: [{ identifierChain: [{ name: 'tbl2' }] }]
-          }
-        }
-      });
-    });
-
     it('should suggest values for "SELECT * FROM testTable WHERE id = |"', () => {
       assertAutoComplete({
         beforeCursor: 'SELECT * FROM testTable WHERE id =',
@@ -4302,7 +4285,6 @@ describe('hiveAutocompleteParser.js SELECT statements', () => {
         }
       });
     });
-
     it('should suggest keywords for "SELECT cast(\'1\' AS |"', () => {
       assertAutoComplete({
         beforeCursor: "SELECT cast('1' AS ",
@@ -5864,42 +5846,6 @@ describe('hiveAutocompleteParser.js SELECT statements', () => {
     });
 
     describe('GROUPING SETS', () => {
-      it('should handle "SELECT a, b, SUM( c ) FROM tab1 GROUP BY a, b WITH CUBE;"', () => {
-        assertAutoComplete({
-          beforeCursor: 'SELECT a, b, SUM( c ) FROM tab1 GROUP BY a, b WITH CUBE;',
-          afterCursor: '',
-          noErrors: true,
-          containsKeywords: ['SELECT'],
-          expectedResult: {
-            lowerCase: false
-          }
-        });
-      });
-
-      it('should handle "SELECT a, b, SUM( c ) FROM tab1 GROUP BY a, b WITH ROLLUP;"', () => {
-        assertAutoComplete({
-          beforeCursor: 'SELECT a, b, SUM( c ) FROM tab1 GROUP BY a, b WITH ROLLUP;',
-          afterCursor: '',
-          noErrors: true,
-          containsKeywords: ['SELECT'],
-          expectedResult: {
-            lowerCase: false
-          }
-        });
-      });
-
-      it('should handle "SELECT a, b, SUM( c ) FROM tab1 GROUP BY a, b GROUPING SETS ( (a, b), a, b, ( ) );"', () => {
-        assertAutoComplete({
-          beforeCursor:
-            'SELECT a, b, SUM( c ) FROM tab1 GROUP BY a, b GROUPING SETS ( (a, b), a, b, ( ) );',
-          afterCursor: '',
-          noErrors: true,
-          containsKeywords: ['SELECT'],
-          expectedResult: {
-            lowerCase: false
-          }
-        });
-      });
 
       it('should suggest keywords for "SELECT * FROM database_two.testTable GROUP BY a, b |"', () => {
         assertAutoComplete({
@@ -5988,22 +5934,6 @@ describe('hiveAutocompleteParser.js SELECT statements', () => {
     });
   });
 
-  describe('HAVING clause', () => {
-    it('should suggest identifiers for "SELECT COUNT(*) AS boo FROM testTable GROUP BY baa HAVING |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT COUNT(*) AS boo FROM testTable GROUP BY baa HAVING ',
-        afterCursor: '',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {},
-          suggestAggregateFunctions: { tables: [{ identifierChain: [{ name: 'testTable' }] }] },
-          suggestColumns: { tables: [{ identifierChain: [{ name: 'testTable' }] }] },
-          suggestColumnAliases: [{ name: 'boo', udfRef: 'count', types: ['UDFREF'] }]
-        }
-      });
-    });
-  });
 
   describe('LIMIT clause', () => {
     it('should handle "SELECT * FROM testTable LIMIT 5,6; |"', () => {
@@ -6014,18 +5944,6 @@ describe('hiveAutocompleteParser.js SELECT statements', () => {
         containsKeywords: ['SELECT'],
         expectedResult: {
           lowerCase: false
-        }
-      });
-    });
-
-    it('should suggest values for "SELECT COUNT(*) AS boo FROM testTable GROUP BY baa LIMIT |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT COUNT(*) AS boo FROM testTable GROUP BY baa LIMIT ',
-        afterCursor: '',
-        noErrors: true,
-        expectedResult: {
-          lowerCase: false,
-          suggestKeywords: ['10', '100', '1000', '10000', '5000']
         }
       });
     });
@@ -7776,38 +7694,6 @@ describe('hiveAutocompleteParser.js SELECT statements', () => {
             {
               alias: 'subQueryOne',
               columns: [{ tables: [{ identifierChain: [{ name: 'tableOne' }] }] }]
-            }
-          ]
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT s2.| FROM (SELECT a, bla FROM (SELECT a, b, abs(1) as bla FROM testTable) s1) s2;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT s2.',
-        afterCursor:
-          ' FROM (SELECT a, bla FROM (SELECT a, b, abs(1) as bla FROM testTable) s1) s2;',
-        expectedResult: {
-          lowerCase: false,
-          suggestKeywords: ['*'],
-          suggestColumns: { source: 'select', tables: [{ identifierChain: [{ subQuery: 's2' }] }] },
-          subQueries: [
-            {
-              alias: 's2',
-              columns: [
-                { identifierChain: [{ subQuery: 's1' }, { name: 'a' }], type: 'COLREF' },
-                { identifierChain: [{ subQuery: 's1' }, { name: 'bla' }], type: 'COLREF' }
-              ],
-              subQueries: [
-                {
-                  alias: 's1',
-                  columns: [
-                    { identifierChain: [{ name: 'testTable' }, { name: 'a' }], type: 'COLREF' },
-                    { identifierChain: [{ name: 'testTable' }, { name: 'b' }], type: 'COLREF' },
-                    { alias: 'bla', type: 'UDFREF', udfRef: 'abs' }
-                  ]
-                }
-              ]
             }
           ]
         }
