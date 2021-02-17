@@ -178,6 +178,9 @@ describe('hiveAutocompleteParser.js GRANT statements', () => {
           afterCursor: '',
           noErrors: true,
           containsKeywords: ['DENY'],
+          expectedResult: {
+            lowerCase: false
+          }
         });
       });
   

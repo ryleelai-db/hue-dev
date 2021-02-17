@@ -15,30 +15,28 @@
 // limitations under the License.
 
 DataDefinition
- : ShowMaterializedViewsStatement
+ : DescribeFunctionStatement
  ;
 
 DataDefinition_EDIT
- : ShowMaterializedViewsStatement_EDIT
+ : DescribeFunctionStatement_EDIT
  ;
 
-ShowMaterializedViewsStatement
- : 'SHOW' 'MATERIALIZED' 'VIEWS' OptionalInOrFromDatabase OptionalLike
+DescribeFunctionStatement
+ : 'DESCRIBE' 'FUNCTION' OptionalExtended RegularIdentifier
  ;
 
-ShowMaterializedViewsStatement_EDIT
- : 'SHOW' 'MATERIALIZED' 'CURSOR'
+DescribeFunctionStatement_EDIT
+ : 'DESCRIBE' 'FUNCTION' OptionalExtended 'CURSOR'
    {
-     parser.suggestKeywords(['VIEWS']);
-   }
- | 'SHOW' 'MATERIALIZED' 'VIEWS' OptionalInOrFromDatabase OptionalLike 'CURSOR'
-   {
-     if (!$5 && !$4) {
-       parser.suggestKeywords([{ value: 'IN', weight: 2 }, { value: 'FROM', weight: 2 }, { value: 'LIKE', weight: 1 }]);
-     } else if (!$5) {
-       parser.suggestKeywords(['LIKE']);
+     if (!$3) {
+       parser.suggestKeywords(['EXTENDED']);
      }
    }
- | 'SHOW' 'MATERIALIZED' 'VIEWS' InOrFromDatabase_EDIT OptionalLike
- | 'SHOW' 'MATERIALIZED' 'VIEWS' OptionalInOrFromDatabase Like_EDIT
+ | 'DESCRIBE' 'FUNCTION' OptionalExtended 'CURSOR' RegularIdentifier
+   {
+     if (!$3) {
+       parser.suggestKeywords(['EXTENDED']);
+     }
+   }
  ;

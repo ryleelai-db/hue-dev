@@ -5934,6 +5934,22 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
     });
   });
 
+  describe('HAVING clause', () => {
+    it('should suggest identifiers for "SELECT COUNT(*) AS boo FROM testTable GROUP BY baa HAVING |"', () => {
+      assertAutoComplete({
+        beforeCursor: 'SELECT COUNT(*) AS boo FROM testTable GROUP BY baa HAVING ',
+        afterCursor: '',
+        containsKeywords: ['CASE'],
+        expectedResult: {
+          lowerCase: false,
+          suggestFunctions: {},
+          suggestAggregateFunctions: { tables: [{ identifierChain: [{ name: 'testTable' }] }] },
+          suggestColumns: { tables: [{ identifierChain: [{ name: 'testTable' }] }] },
+          suggestColumnAliases: [{ name: 'boo', udfRef: 'count', types: ['UDFREF'] }]
+        }
+      });
+    });
+  });
 
   describe('LIMIT clause', () => {
     it('should handle "SELECT * FROM testTable LIMIT 5,6; |"', () => {

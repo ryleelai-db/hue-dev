@@ -45,7 +45,6 @@ describe('databricksAutocompleteParser.js SHOW statements', () => {
           'CREATE TABLE',
           'DATABASES',
           'FORMATTED',
-          'MATERIALIZED VIEWS',
           'PARTITIONS',
           'SCHEMAS',
           'TABLE EXTENDED',
@@ -224,7 +223,7 @@ describe('databricksAutocompleteParser.js SHOW statements', () => {
       });
     });
   });
-  
+
   describe('SHOW CREATE', () => {
     it('should suggest keywords for "SHOW CREATE |"', () => {
       assertAutoComplete({
@@ -302,76 +301,6 @@ describe('databricksAutocompleteParser.js SHOW statements', () => {
   });
 
  
-
-  describe('SHOW MATERIALIZED VIEWS', () => {
-    it('should handle "SHOW MATERIALIZED VIEWS;|"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SHOW MATERIALIZED VIEWS;',
-        afterCursor: '',
-        noErrors: true,
-        containsKeywords: ['SELECT'],
-        expectedResult: {
-          lowerCase: false
-        }
-      });
-    });
-
-    it('should handle "SHOW MATERIALIZED VIEWS IN boo LIKE \'asdf\';|"', () => {
-      assertAutoComplete({
-        beforeCursor: "SHOW MATERIALIZED VIEWS IN boo LIKE 'asdf';",
-        afterCursor: '',
-        noErrors: true,
-        containsKeywords: ['SELECT'],
-        expectedResult: {
-          lowerCase: false
-        }
-      });
-    });
-
-    it('should suggest keywords for "SHOW MATERIALIZED VIEWS |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SHOW MATERIALIZED VIEWS ',
-        afterCursor: '',
-        expectedResult: {
-          lowerCase: false,
-          suggestKeywords: ['FROM', 'IN', 'LIKE']
-        }
-      });
-    });
-
-    it('should suggest databases for "SHOW MATERIALIZED VIEWS IN |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SHOW MATERIALIZED VIEWS IN ',
-        afterCursor: '',
-        expectedResult: {
-          lowerCase: false,
-          suggestDatabases: {}
-        }
-      });
-    });
-
-    it('should suggest databases for "SHOW MATERIALIZED VIEWS FROM |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SHOW MATERIALIZED VIEWS FROM ',
-        afterCursor: '',
-        expectedResult: {
-          lowerCase: false,
-          suggestDatabases: {}
-        }
-      });
-    });
-
-    it('should suggest keywords for "SHOW MATERIALIZED VIEWS IN boo |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SHOW VIEWS IN boo ',
-        afterCursor: '',
-        expectedResult: {
-          lowerCase: false,
-          suggestKeywords: ['LIKE']
-        }
-      });
-    });
-  });
 
   describe('SHOW PARTITIONS', () => {
     it('should suggest tables for "SHOW PARTITIONS |"', () => {

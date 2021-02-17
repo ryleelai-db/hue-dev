@@ -27,6 +27,7 @@
 '\u2021'                             { parser.yy.partialCursor = true; parser.yy.cursorFound = yylloc; return 'PARTIAL_CURSOR'; }
 
 // Reserved Keywords
+'ADD'                                { return 'ADD'; }
 'ALL'                                { return 'ALL'; }
 'ALTER'                              { parser.determineCase(yytext); parser.addStatementTypeLocation('ALTER', yylloc, yy.lexer.upcomingInput()); return 'ALTER'; }
 'AND'                                { return 'AND'; }
@@ -53,6 +54,7 @@
 'DECIMAL'                            { return 'DECIMAL'; }
 'DELETE'                             { parser.determineCase(yytext); return 'DELETE'; }
 'DESCRIBE'                           { parser.determineCase(yytext); return 'DESCRIBE'; }
+'DENY'                               { parser.determineCase(yytext); parser.addStatementTypeLocation('DENY', yylloc); return 'DENY'; }
 'DISTINCT'                           { return 'DISTINCT'; }
 'DIV'                                { return 'ARITHMETIC_OPERATOR'; }
 'DOUBLE'                             { return 'DOUBLE'; }
@@ -87,6 +89,7 @@
 'LATERAL'                            { return 'LATERAL'; }
 'LEFT'                               { return 'LEFT'; }
 'LIKE'                               { return 'LIKE'; }
+'LIST'                               { return 'LIST'; }
 'LIMIT'                              { return 'LIMIT'; }
 'LOCAL'                              { return 'LOCAL'; }
 'MACRO'                              { return 'MACRO'; }
@@ -109,6 +112,7 @@
 'REFERENCES'                         { return 'REFERENCES'; }
 'REGEXP'                             { return 'REGEXP'; }
 'REVOKE'                             { return 'REVOKE'; }
+'RESET'                              { return 'RESET'; }
 'RIGHT'                              { return 'RIGHT'; }
 'RLIKE'                              { return 'RLIKE'; }
 'ROLLUP'                             { return 'ROLLUP'; }
@@ -140,7 +144,6 @@
 
 // Non-reserved Keywords
 'ABORT'                              { parser.determineCase(yytext); return 'ABORT'; }
-'ADD'                                { return 'ADD'; }
 'ADMIN'                              { return 'ADMIN'; }
 'AFTER'                              { return 'AFTER'; }
 'ANALYZE'                            { parser.determineCase(yytext); return 'ANALYZE'; }

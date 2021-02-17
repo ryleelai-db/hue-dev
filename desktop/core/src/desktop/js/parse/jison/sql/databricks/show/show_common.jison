@@ -17,7 +17,16 @@
 DataDefinition_EDIT
  : 'SHOW' 'CURSOR'
    {
-     parser.suggestKeywords('SHOW');
+     parser.suggestKeywords(['COLUMNS',
+          'CREATE TABLE',
+          'DATABASES',
+          'FORMATTED',
+          'PARTITIONS',
+          'SCHEMAS',
+          'TABLE EXTENDED',
+          'TABLES',
+          'TBLPROPERTIES',
+          'VIEWS']);
    }
  | 'SHOW' 'CURSOR' RegularOrBackTickedSchemaQualifiedName
    {

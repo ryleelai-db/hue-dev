@@ -15,9 +15,19 @@
 // limitations under the License.
 
 DataDefinition
- : ShowRolesStatement
+ : DescribeQueryStatement
  ;
 
-ShowRolesStatement
- : 'SHOW' 'ROLES'
+DataDefinition_EDIT
+ : DescribeQueryStatement_EDIT
+ ;
+
+DescribeQueryStatement
+ : 'DESCRIBE' 'QUERY' 
+ ;
+
+DescribeQueryStatement_EDIT
+ : 'DESCRIBE' 'QUERY' 'CURSOR'
+   {
+   }
  ;
