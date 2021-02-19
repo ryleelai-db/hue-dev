@@ -275,6 +275,367 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
     });
   });
 
+  describe('CREATE INDEX', () => {
+    it('should handle "CREATE INDEX bla ON TABLE db.tbl (a, b, c) AS \'COMPACT\' WITH DEFERRED REBUILD IDXPROPERTIES ("boo.baa"="ble", "blaa"=1) IN TABLE dbTwo.tblTwo ROW FORMAT DELIMITED STORED AS PARQUET LOCATION \'/baa/boo\' TBLPROPERTIES ("bla"=1) COMMENT "booo"; |"', () => {
+      assertAutoComplete({
+        beforeCursor:
+          "CREATE INDEX bla ON TABLE db.tbl (a, b, c) AS 'COMPACT' WITH DEFERRED REBUILD IDXPROPERTIES " +
+          '("boo.baa"="ble", "blaa"=1) IN TABLE dbTwo.tblTwo ROW FORMAT DELIMITED STORED AS PARQUET LOCATION \'/baa/boo\' ' +
+          'TBLPROPERTIES ("bla"=1) COMMENT "booo"; ',
+        afterCursor: '',
+        containsKeywords: ['SELECT'],
+        expectedResult: {
+          lowerCase: false
+        }
+      });
+    });
+
+    it('should handle "CREATE INDEX bla ON TABLE db.tbl (a, b, c) AS \'boo.baa.bitmap\'; |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE db.tbl (a, b, c) AS 'boo.baa.bitmap'; ",
+        afterCursor: '',
+        containsKeywords: ['SELECT'],
+        expectedResult: {
+          lowerCase: false
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla  |"', () => {
+      assertAutoComplete({
+        beforeCursor: 'CREATE INDEX bla ',
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['ON TABLE']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON |"', () => {
+      assertAutoComplete({
+        beforeCursor: 'CREATE INDEX bla ON ',
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['TABLE']
+        }
+      });
+    });
+
+    it('should suggest tables for "CREATE INDEX bla ON TABLE |"', () => {
+      assertAutoComplete({
+        beforeCursor: 'CREATE INDEX bla ON TABLE ',
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestTables: {},
+          suggestDatabases: { appendDot: true }
+        }
+      });
+    });
+
+    it('should suggest columns for "CREATE INDEX bla ON TABLE foo.bar (|"', () => {
+      assertAutoComplete({
+        beforeCursor: 'CREATE INDEX bla ON TABLE foo.bar (',
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestColumns: { tables: [{ identifierChain: [{ name: 'foo' }, { name: 'bar' }] }] }
+        }
+      });
+    });
+
+    it('should suggest columns for "CREATE INDEX bla ON TABLE foo.bar (a, b, c, |"', () => {
+      assertAutoComplete({
+        beforeCursor: 'CREATE INDEX bla ON TABLE foo.bar (a, b, c, ',
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestColumns: { tables: [{ identifierChain: [{ name: 'foo' }, { name: 'bar' }] }] }
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) |"', () => {
+      assertAutoComplete({
+        beforeCursor: 'CREATE INDEX bla ON TABLE boo (a, b, c) ',
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['AS']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS |"', () => {
+      assertAutoComplete({
+        beforeCursor: 'CREATE INDEX bla ON TABLE boo (a, b, c) AS ',
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ["'BITMAP'", "'COMPACT'"]
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BIT|"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BIT",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ["'BITMAP'", "'COMPACT'"]
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: [
+            'WITH DEFERRED REBUILD',
+            'IDXPROPERTIES',
+            'IN TABLE',
+            'ROW FORMAT',
+            'STORED AS',
+            'STORED BY',
+            'LOCATION',
+            'TBLPROPERTIES',
+            'COMMENT'
+          ]
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' WITH |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' WITH ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['DEFERRED REBUILD']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' WITH DEFERRED |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' WITH DEFERRED ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['REBUILD']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' WITH DEFERRED REBUILD |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' WITH DEFERRED REBUILD ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: [
+            'IDXPROPERTIES',
+            'IN TABLE',
+            'ROW FORMAT',
+            'STORED AS',
+            'STORED BY',
+            'LOCATION',
+            'TBLPROPERTIES',
+            'COMMENT'
+          ]
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IDXPROPERTIES ("baa"="boo") |"', () => {
+      assertAutoComplete({
+        beforeCursor:
+          'CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IDXPROPERTIES ("baa"="boo") ',
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: [
+            'IN TABLE',
+            'ROW FORMAT',
+            'STORED AS',
+            'STORED BY',
+            'LOCATION',
+            'TBLPROPERTIES',
+            'COMMENT'
+          ]
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IN |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' IN ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['TABLE']
+        }
+      });
+    });
+
+    it('should suggest tables for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IN TABLE |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' IN TABLE ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestTables: {},
+          suggestDatabases: { appendDot: true }
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IN TABLE boo |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' IN TABLE boo ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: [
+            'ROW FORMAT',
+            'STORED AS',
+            'STORED BY',
+            'LOCATION',
+            'TBLPROPERTIES',
+            'COMMENT'
+          ]
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['FORMAT']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW FORMAT |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW FORMAT ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['DELIMITED', 'SERDE']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW FORMAT DELIMITED |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW FORMAT DELIMITED ",
+        afterCursor: '',
+        containsKeywords: [
+          'MAP KEYS TERMINATED BY',
+          'NULL DEFINED AS',
+          'LOCATION',
+          'TBLPROPERTIES',
+          'COMMENT'
+        ],
+        doesNotContainKeywords: ['AS'],
+        expectedResult: {
+          lowerCase: false
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW FORMAT DELIMITED NULL |"', () => {
+      assertAutoComplete({
+        beforeCursor:
+          "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW FORMAT DELIMITED NULL ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['DEFINED AS']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' ROW FORMAT DELIMITED STORED |"', () => {
+      assertAutoComplete({
+        beforeCursor:
+          "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' ROW FORMAT DELIMITED STORED ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['AS']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' STORED |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' STORED ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['AS', 'BY']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' ROW FORMAT DELIMITED STORED AS |"', () => {
+      assertAutoComplete({
+        beforeCursor:
+          "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' ROW FORMAT DELIMITED STORED AS ",
+        afterCursor: '',
+        containsKeywords: ['ORC', 'PARQUET'],
+        expectedResult: {
+          lowerCase: false
+        }
+      });
+    });
+
+    it("should suggest hdfs for \"CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '|\"", () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestHdfs: { path: '' }
+        }
+      });
+    });
+
+    it("should suggest keywords for \"CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '/baa' |\"", () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '/baa' ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['TBLPROPERTIES', 'COMMENT']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' TBLPROPERTIES ("baa"="boo") |"', () => {
+      assertAutoComplete({
+        beforeCursor:
+          'CREATE INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' TBLPROPERTIES ("baa"="boo") ',
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['COMMENT']
+        }
+      });
+    });
+  });
+
 
   describe('CREATE TABLE', () => {
     it('should suggest keywords for "CREATE TABLE |"', () => {

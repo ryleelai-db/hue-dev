@@ -45,6 +45,7 @@
 'COLUMN'                             { return 'COLUMN'; }
 'CONF'                               { return 'CONF'; }
 'CONSTRAINT'                         { return 'CONSTRAINT'; }
+'CLEAR'                              { return 'CLEAR'; }
 'CREATE'                             { parser.determineCase(yytext); return 'CREATE'; }
 'CROSS'                              { return 'CROSS'; }
 'CUBE'                               { return 'CUBE'; }
@@ -87,6 +88,7 @@
 'IS'                                 { return 'IS'; }
 'JOIN'                               { return 'JOIN'; }
 'LATERAL'                            { return 'LATERAL'; }
+'LAZY'                               { return 'LAZY'; }
 'LEFT'                               { return 'LEFT'; }
 'LIKE'                               { return 'LIKE'; }
 'LIST'                               { return 'LIST'; }
@@ -102,6 +104,7 @@
 'ON'                                 { return 'ON'; }
 'OR'                                 { return 'OR'; }
 'ORDER'                              { return 'ORDER'; }
+'OPTIONS'                            { return 'OPTIONS'; }
 'OUT'                                { return 'OUT'; }
 'OUTER'                              { return 'OUTER'; }
 'PARTITION'                          { return 'PARTITION'; }
@@ -111,6 +114,7 @@
 'RANGE'                              { return 'RANGE'; }
 'REFERENCES'                         { return 'REFERENCES'; }
 'REGEXP'                             { return 'REGEXP'; }
+'REFRESH'                            { return 'REFRESH'; }
 'REVOKE'                             { return 'REVOKE'; }
 'RESET'                              { return 'RESET'; }
 'RIGHT'                              { return 'RIGHT'; }
@@ -131,6 +135,7 @@
 'TRUNCATE'                           { parser.determineCase(yytext); parser.addStatementTypeLocation('TRUNCATE', yylloc, yy.lexer.upcomingInput()); return 'TRUNCATE'; }
 'UNBOUNDED'                          { return 'UNBOUNDED'; }
 'UNION'                              { return 'UNION'; }
+'UNCACHE'                            { return 'UNCACHE'; }
 'UPDATE'                             { parser.determineCase(yytext); return 'UPDATE'; }
 'USER'                               { return 'USER'; }
 'USING'                              { return 'USING'; }
