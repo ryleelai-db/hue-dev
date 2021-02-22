@@ -93,6 +93,7 @@
 'SCHEMA'                                   { return 'SCHEMA'; }
 'SELECT'                                   { parser.determineCase(yytext); parser.addStatementTypeLocation('SELECT', yylloc); return 'SELECT'; }
 'SEMI'                                     { return 'SEMI'; }
+'RESET'                                    { parser.determineCase(yytext); parser.addStatementTypeLocation('RESET', yylloc); return 'RESET'; }
 'SET'                                      { parser.determineCase(yytext); parser.addStatementTypeLocation('SET', yylloc); return 'SET'; }
 'SHOW'                                     { parser.determineCase(yytext); parser.addStatementTypeLocation('SHOW', yylloc); return 'SHOW'; }
 'SMALLINT'                                 { return 'SMALLINT'; }

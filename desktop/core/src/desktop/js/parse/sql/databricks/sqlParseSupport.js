@@ -1019,6 +1019,7 @@ const initSqlParser = function (parser) {
       'REVOKE',
       'SELECT',
       'SET',
+      'RESET',
       'SHOW',
       'TRUNCATE',
       'UPDATE',
