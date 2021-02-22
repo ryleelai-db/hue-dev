@@ -16,6 +16,7 @@
 
 DataDefinition
  : 'SET' SetOption '=' SetValue
+ | 'RESET'
  ;
 
 SetOption
