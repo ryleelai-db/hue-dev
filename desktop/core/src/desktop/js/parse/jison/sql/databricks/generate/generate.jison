@@ -14,14 +14,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-DataDefinition_EDIT
- : 'DROP' 'CURSOR'
-   {
-     parser.suggestKeywords(['DATABASE', 'FUNCTION', 'BLOOMFILTER INDEX', 'SCHEMA', 'TABLE', 'TEMPORARY FUNCTION', 'VIEW']);
-   }
+DataDefinition
+ : generate
  ;
 
-OptionalPurge
- :
- | 'PURGE'
+DataDefinition_EDIT
+ : generate_EDIT
+ ;
+
+generate
+ : 'GENERATE' RegularIdentifier 'FOR' 'TABLE' SchemaQualifiedTableIdentifier
+ ;
+
+
+generate_EDIT
+ : 'GENERATE' RegularIdentifier 'CURSOR'
+ {
+    parser.suggestKeywords(['FOR TABLE']);
+ }
+| 'GENERATE' RegularIdentifier 'FOR' 'CURSOR'
+ {
+    parser.suggestKeywords(['TABLE']);
+ }
  ;

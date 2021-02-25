@@ -38,7 +38,7 @@ describe('databricksAutocompleteParser.js SET statements', () => {
     assertAutoComplete({
       beforeCursor: '',
       afterCursor: '',
-      containsKeywords: ['SET'],
+      containsKeywords: ['SET', 'RESET'],
       expectedResult: {
         lowerCase: false
       }

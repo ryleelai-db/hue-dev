@@ -53,6 +53,7 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       expectedResult: {
         lowerCase: false,
         suggestKeywords: [
+          'BLOOMFILTER INDEX',
           'DATABASE',
           'EXTERNAL TABLE',
           'FUNCTION',
@@ -275,11 +276,11 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
     });
   });
 
-  describe('CREATE INDEX', () => {
-    it('should handle "CREATE INDEX bla ON TABLE db.tbl (a, b, c) AS \'COMPACT\' WITH DEFERRED REBUILD IDXPROPERTIES ("boo.baa"="ble", "blaa"=1) IN TABLE dbTwo.tblTwo ROW FORMAT DELIMITED STORED AS PARQUET LOCATION \'/baa/boo\' TBLPROPERTIES ("bla"=1) COMMENT "booo"; |"', () => {
+  describe('CREATE BLOOMFILTER INDEX', () => {
+    it('should handle "CREATE BLOOMFILTER INDEX bla ON TABLE db.tbl (a, b, c) AS \'COMPACT\' WITH DEFERRED REBUILD IDXPROPERTIES ("boo.baa"="ble", "blaa"=1) IN TABLE dbTwo.tblTwo ROW FORMAT DELIMITED STORED AS PARQUET LOCATION \'/baa/boo\' TBLPROPERTIES ("bla"=1) COMMENT "booo"; |"', () => {
       assertAutoComplete({
         beforeCursor:
-          "CREATE INDEX bla ON TABLE db.tbl (a, b, c) AS 'COMPACT' WITH DEFERRED REBUILD IDXPROPERTIES " +
+          "CREATE BLOOMFILTER INDEX bla ON TABLE db.tbl (a, b, c) AS 'COMPACT' WITH DEFERRED REBUILD IDXPROPERTIES " +
           '("boo.baa"="ble", "blaa"=1) IN TABLE dbTwo.tblTwo ROW FORMAT DELIMITED STORED AS PARQUET LOCATION \'/baa/boo\' ' +
           'TBLPROPERTIES ("bla"=1) COMMENT "booo"; ',
         afterCursor: '',
@@ -290,9 +291,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should handle "CREATE INDEX bla ON TABLE db.tbl (a, b, c) AS \'boo.baa.bitmap\'; |"', () => {
+    it('should handle "CREATE BLOOMFILTER INDEX bla ON TABLE db.tbl (a, b, c) AS \'boo.baa.bitmap\'; |"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE db.tbl (a, b, c) AS 'boo.baa.bitmap'; ",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE db.tbl (a, b, c) AS 'boo.baa.bitmap'; ",
         afterCursor: '',
         containsKeywords: ['SELECT'],
         expectedResult: {
@@ -301,9 +302,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla  |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla  |"', () => {
       assertAutoComplete({
-        beforeCursor: 'CREATE INDEX bla ',
+        beforeCursor: 'CREATE BLOOMFILTER INDEX bla ',
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -312,9 +313,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON |"', () => {
       assertAutoComplete({
-        beforeCursor: 'CREATE INDEX bla ON ',
+        beforeCursor: 'CREATE BLOOMFILTER INDEX bla ON ',
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -323,9 +324,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest tables for "CREATE INDEX bla ON TABLE |"', () => {
+    it('should suggest tables for "CREATE BLOOMFILTER INDEX bla ON TABLE |"', () => {
       assertAutoComplete({
-        beforeCursor: 'CREATE INDEX bla ON TABLE ',
+        beforeCursor: 'CREATE BLOOMFILTER INDEX bla ON TABLE ',
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -335,9 +336,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest columns for "CREATE INDEX bla ON TABLE foo.bar (|"', () => {
+    it('should suggest columns for "CREATE BLOOMFILTER INDEX bla ON TABLE foo.bar (|"', () => {
       assertAutoComplete({
-        beforeCursor: 'CREATE INDEX bla ON TABLE foo.bar (',
+        beforeCursor: 'CREATE BLOOMFILTER INDEX bla ON TABLE foo.bar (',
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -346,9 +347,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest columns for "CREATE INDEX bla ON TABLE foo.bar (a, b, c, |"', () => {
+    it('should suggest columns for "CREATE BLOOMFILTER INDEX bla ON TABLE foo.bar (a, b, c, |"', () => {
       assertAutoComplete({
-        beforeCursor: 'CREATE INDEX bla ON TABLE foo.bar (a, b, c, ',
+        beforeCursor: 'CREATE BLOOMFILTER INDEX bla ON TABLE foo.bar (a, b, c, ',
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -357,9 +358,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) |"', () => {
       assertAutoComplete({
-        beforeCursor: 'CREATE INDEX bla ON TABLE boo (a, b, c) ',
+        beforeCursor: 'CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) ',
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -368,9 +369,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS |"', () => {
       assertAutoComplete({
-        beforeCursor: 'CREATE INDEX bla ON TABLE boo (a, b, c) AS ',
+        beforeCursor: 'CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS ',
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -379,9 +380,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BIT|"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BIT|"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BIT",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BIT",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -390,30 +391,20 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' |"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
-          suggestKeywords: [
-            'WITH DEFERRED REBUILD',
-            'IDXPROPERTIES',
-            'IN TABLE',
-            'ROW FORMAT',
-            'STORED AS',
-            'STORED BY',
-            'LOCATION',
-            'TBLPROPERTIES',
-            'COMMENT'
-          ]
+          suggestKeywords: ['IDXPROPERTIES', 'IN TABLE', 'ROW FORMAT', 'STORED AS', 'STORED BY', 'LOCATION', 'TBLPROPERTIES', 'COMMENT']
         }
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' WITH |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' WITH |"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' WITH ",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' WITH ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -422,9 +413,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' WITH DEFERRED |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' WITH DEFERRED |"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' WITH DEFERRED ",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' WITH DEFERRED ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -433,49 +424,32 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' WITH DEFERRED REBUILD |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' WITH DEFERRED REBUILD |"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' WITH DEFERRED REBUILD ",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' WITH DEFERRED REBUILD ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
-          suggestKeywords: [
-            'IDXPROPERTIES',
-            'IN TABLE',
-            'ROW FORMAT',
-            'STORED AS',
-            'STORED BY',
-            'LOCATION',
-            'TBLPROPERTIES',
-            'COMMENT'
-          ]
+          suggestKeywords: ['IN TABLE', 'ROW FORMAT', 'STORED AS', 'STORED BY', 'LOCATION', 'TBLPROPERTIES', 'COMMENT']
         }
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IDXPROPERTIES ("baa"="boo") |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IDXPROPERTIES ("baa"="boo") |"', () => {
       assertAutoComplete({
         beforeCursor:
-          'CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IDXPROPERTIES ("baa"="boo") ',
+          'CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IDXPROPERTIES ("baa"="boo") ',
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
-          suggestKeywords: [
-            'IN TABLE',
-            'ROW FORMAT',
-            'STORED AS',
-            'STORED BY',
-            'LOCATION',
-            'TBLPROPERTIES',
-            'COMMENT'
-          ]
+          suggestKeywords: ['ROW FORMAT', 'STORED AS', 'STORED BY', 'LOCATION', 'TBLPROPERTIES', 'COMMENT']
         }
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IN |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IN |"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' IN ",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' IN ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -484,9 +458,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest tables for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IN TABLE |"', () => {
+    it('should suggest tables for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IN TABLE |"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' IN TABLE ",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' IN TABLE ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -496,27 +470,20 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IN TABLE boo |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' IN TABLE boo |"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' IN TABLE boo ",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' IN TABLE boo ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
-          suggestKeywords: [
-            'ROW FORMAT',
-            'STORED AS',
-            'STORED BY',
-            'LOCATION',
-            'TBLPROPERTIES',
-            'COMMENT'
-          ]
+          suggestKeywords:  ['STORED AS', 'LOCATION', 'TBLPROPERTIES', 'COMMENT']
         }
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW |"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW ",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -525,9 +492,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW FORMAT |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW FORMAT |"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW FORMAT ",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW FORMAT ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -536,17 +503,11 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW FORMAT DELIMITED |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW FORMAT DELIMITED |"', () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW FORMAT DELIMITED ",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW FORMAT DELIMITED ",
         afterCursor: '',
-        containsKeywords: [
-          'MAP KEYS TERMINATED BY',
-          'NULL DEFINED AS',
-          'LOCATION',
-          'TBLPROPERTIES',
-          'COMMENT'
-        ],
+        containsKeywords:  ["LOCATION","TBLPROPERTIES","COMMENT"],
         doesNotContainKeywords: ['AS'],
         expectedResult: {
           lowerCase: false
@@ -554,10 +515,10 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW FORMAT DELIMITED NULL |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'BITMAP\' ROW FORMAT DELIMITED NULL |"', () => {
       assertAutoComplete({
         beforeCursor:
-          "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW FORMAT DELIMITED NULL ",
+          "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'BITMAP' ROW FORMAT DELIMITED NULL ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -566,21 +527,10 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' ROW FORMAT DELIMITED STORED |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' ROW FORMAT DELIMITED STORED |"', () => {
       assertAutoComplete({
         beforeCursor:
-          "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' ROW FORMAT DELIMITED STORED ",
-        afterCursor: '',
-        expectedResult: {
-          lowerCase: false,
-          suggestKeywords: ['AS']
-        }
-      });
-    });
-
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' STORED |"', () => {
-      assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' STORED ",
+          "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' ROW FORMAT DELIMITED STORED ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -589,10 +539,21 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' ROW FORMAT DELIMITED STORED AS |"', () => {
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' STORED |"', () => {
+      assertAutoComplete({
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' STORED ",
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['AS', 'BY']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' ROW FORMAT DELIMITED STORED AS |"', () => {
       assertAutoComplete({
         beforeCursor:
-          "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' ROW FORMAT DELIMITED STORED AS ",
+          "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' ROW FORMAT DELIMITED STORED AS ",
         afterCursor: '',
         containsKeywords: ['ORC', 'PARQUET'],
         expectedResult: {
@@ -601,9 +562,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it("should suggest hdfs for \"CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '|\"", () => {
+    it("should suggest hdfs for \"CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '|\"", () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '",
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -612,21 +573,9 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
       });
     });
 
-    it("should suggest keywords for \"CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '/baa' |\"", () => {
+    it("should suggest keywords for \"CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '/baa' |\"", () => {
       assertAutoComplete({
-        beforeCursor: "CREATE INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '/baa' ",
-        afterCursor: '',
-        expectedResult: {
-          lowerCase: false,
-          suggestKeywords: ['TBLPROPERTIES', 'COMMENT']
-        }
-      });
-    });
-
-    it('should suggest keywords for "CREATE INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' TBLPROPERTIES ("baa"="boo") |"', () => {
-      assertAutoComplete({
-        beforeCursor:
-          'CREATE INDEX bla ON TABLE boo (a, b, c) AS \'COMPACT\' TBLPROPERTIES ("baa"="boo") ',
+        beforeCursor: "CREATE BLOOMFILTER INDEX bla ON TABLE boo (a, b, c) AS 'COMPACT' LOCATION '/baa' ",
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
@@ -634,6 +583,7 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
         }
       });
     });
+
   });
 
 
@@ -644,7 +594,7 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
         afterCursor: '',
         expectedResult: {
           lowerCase: false,
-          suggestKeywords: ['IF NOT EXISTS']
+          suggestKeywords: ['DEEP CLONE', 'IF NOT EXISTS', 'SHALLOW CLONE']
         }
       });
     });
@@ -661,6 +611,17 @@ describe('databricksAutocompleteParser.js CREATE statements', () => {
     });
 
     it('should suggest keywords for "CREATE TABLE IF NOT |"', () => {
+      assertAutoComplete({
+        beforeCursor: 'CREATE TABLE IF NOT ',
+        afterCursor: '',
+        expectedResult: {
+          lowerCase: false,
+          suggestKeywords: ['EXISTS']
+        }
+      });
+    });
+
+    it('should suggest keywords for "CREATE TABLE IF NOT EXIST |"', () => {
       assertAutoComplete({
         beforeCursor: 'CREATE TABLE IF NOT ',
         afterCursor: '',

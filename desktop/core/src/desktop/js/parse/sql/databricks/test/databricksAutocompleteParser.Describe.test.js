@@ -251,7 +251,7 @@ describe('databricksAutocompleteParser.js DESCRIBE statements', () => {
       afterCursor: '',
       expectedResult: {
         lowerCase: false,
-        suggestKeywords: ['DATABASE', 'EXTENDED', 'FORMATTED', 'FUNCTION', 'QUERY', 'SCHEMA'],
+        suggestKeywords: ['DATABASE', 'EXTENDED', 'FORMATTED', 'FUNCTION', 'HISTORY', 'QUERY', 'SCHEMA'],
         suggestTables: {},
         suggestDatabases: { appendDot: true }
       }
@@ -264,7 +264,7 @@ describe('databricksAutocompleteParser.js DESCRIBE statements', () => {
       afterCursor: '',
       expectedResult: {
         lowerCase: false,
-        suggestKeywords: ['DATABASE', 'EXTENDED', 'FORMATTED', 'FUNCTION', 'QUERY', 'SCHEMA'],
+        suggestKeywords: ['DATABASE', 'EXTENDED', 'FORMATTED', 'FUNCTION', 'HISTORY', 'QUERY', 'SCHEMA'],
         suggestTables: {},
         suggestDatabases: { appendDot: true }
       }

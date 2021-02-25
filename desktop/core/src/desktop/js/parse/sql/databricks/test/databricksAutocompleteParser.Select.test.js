@@ -337,102 +337,6 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
   });
 
   describe('Select List Completion', () => {
-    it('should handle "select count(*), tst.count, avg (id), avg from autocomp_test tst;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'select count(*), tst.count, avg (id), avg from autocomp_test tst;',
-        afterCursor: '',
-        noErrors: true,
-        containsKeywords: ['SELECT'],
-        expectedResult: {
-          locations: [
-            {
-              type: 'statement',
-              location: { first_line: 1, last_line: 1, first_column: 1, last_column: 65 }
-            },
-            {
-              type: 'selectList',
-              missing: false,
-              location: { first_line: 1, last_line: 1, first_column: 8, last_column: 42 }
-            },
-            {
-              type: 'function',
-              location: { first_line: 1, last_line: 1, first_column: 8, last_column: 12 },
-              function: 'count'
-            },
-            {
-              type: 'functionArgument',
-              location: { first_line: 1, last_line: 1, first_column: 14, last_column: 15 },
-              function: 'count',
-              argumentPosition: 0,
-              identifierChain: [{ name: 'count' }],
-              expression: { text: '*' }
-            },
-            {
-              type: 'table',
-              location: { first_line: 1, last_line: 1, first_column: 18, last_column: 21 },
-              identifierChain: [{ name: 'autocomp_test' }]
-            },
-            {
-              type: 'column',
-              location: { first_line: 1, last_line: 1, first_column: 22, last_column: 27 },
-              identifierChain: [{ name: 'count' }],
-              tables: [{ identifierChain: [{ name: 'autocomp_test' }], alias: 'tst' }],
-              qualified: true
-            },
-            {
-              type: 'function',
-              location: { first_line: 1, last_line: 1, first_column: 29, last_column: 32 },
-              function: 'avg'
-            },
-            {
-              type: 'functionArgument',
-              location: { first_line: 1, last_line: 1, first_column: 34, last_column: 36 },
-              function: 'avg',
-              argumentPosition: 0,
-              identifierChain: [{ name: 'avg' }],
-              expression: { types: ['COLREF'], columnReference: [{ name: 'id' }] }
-            },
-            {
-              type: 'column',
-              location: { first_line: 1, last_line: 1, first_column: 34, last_column: 36 },
-              identifierChain: [{ name: 'id' }],
-              tables: [{ identifierChain: [{ name: 'autocomp_test' }], alias: 'tst' }],
-              qualified: false
-            },
-            {
-              type: 'column',
-              location: { first_line: 1, last_line: 1, first_column: 39, last_column: 42 },
-              identifierChain: [{ name: 'avg' }],
-              tables: [{ identifierChain: [{ name: 'autocomp_test' }], alias: 'tst' }],
-              qualified: false
-            },
-            {
-              type: 'table',
-              location: { first_line: 1, last_line: 1, first_column: 48, last_column: 61 },
-              identifierChain: [{ name: 'autocomp_test' }]
-            },
-            {
-              type: 'alias',
-              source: 'table',
-              alias: 'tst',
-              location: { first_line: 1, last_line: 1, first_column: 62, last_column: 65 },
-              identifierChain: [{ name: 'autocomp_test' }]
-            },
-            {
-              type: 'whereClause',
-              missing: true,
-              location: { first_line: 1, last_line: 1, first_column: 65, last_column: 65 }
-            },
-            {
-              type: 'limitClause',
-              missing: true,
-              location: { first_line: 1, last_line: 1, first_column: 65, last_column: 65 }
-            }
-          ],
-          lowerCase: true
-        }
-      });
-    });
 
     it('should suggest tables for "SELECT |"', () => {
       assertAutoComplete({
@@ -1112,25 +1016,6 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
       });
     });
 
-    it('should suggest columns for "SELECT | a, cast(b as int), c, d FROM testTable WHERE a = \'US\' AND b >= 998 ORDER BY c DESC LIMIT 15"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT ',
-        afterCursor:
-          " a, cast(b as int), c, d FROM testTable WHERE a = 'US' AND b >= 998 ORDER BY c DESC LIMIT 15",
-        containsKeywords: ['*', 'ALL', 'DISTINCT'],
-        expectedResult: {
-          lowerCase: false,
-          suggestAggregateFunctions: { tables: [{ identifierChain: [{ name: 'testTable' }] }] },
-          suggestAnalyticFunctions: true,
-          suggestFunctions: {},
-          suggestColumns: {
-            source: 'select',
-            tables: [{ identifierChain: [{ name: 'testTable' }] }]
-          }
-        }
-      });
-    });
-
     it('should suggest columns for "SELECT a, b, |,c, d FROM testTable WHERE a = \'US\' AND b >= 998 ORDER BY c DESC LIMIT 15"', () => {
       assertAutoComplete({
         beforeCursor: 'SELECT a, b, ',
@@ -1333,18 +1218,6 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
       });
     });
 
-    it('should handle "SELECT COUNT(DISTINCT a) OVER (PARTITION by c) FROM testTable;|"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT COUNT(DISTINCT a) OVER (PARTITION by c) FROM testTable;',
-        afterCursor: '',
-        noErrors: true,
-        containsKeywords: ['SELECT'],
-        expectedResult: {
-          lowerCase: false
-        }
-      });
-    });
-
     it('should suggest analytical functions for "SELECT |"', () => {
       assertAutoComplete({
         beforeCursor: 'SELECT ',
@@ -1394,40 +1267,6 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
       });
     });
 
-    it('should suggest keywords for "SELECT count(DISTINCT a) |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT count(DISTINCT a) ',
-        afterCursor: '',
-        containsKeywords: ['OVER'],
-        expectedResult: {
-          lowerCase: false,
-          suggestTables: { prependFrom: true },
-          suggestDatabases: { prependFrom: true, appendDot: true }
-        }
-      });
-    });
-
-    it('should suggest keywords for "SELECT count(DISTINCT a) | FROM testTable"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT count(DISTINCT a) ',
-        afterCursor: ' FROM testTable',
-        containsKeywords: ['OVER'],
-        expectedResult: {
-          lowerCase: false
-        }
-      });
-    });
-
-    it('should suggest keywords for "SELECT count(DISTINCT a) |, b, c FROM testTable"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT count(DISTINCT a) ',
-        afterCursor: ', b, c FROM testTable',
-        containsKeywords: ['OVER'],
-        expectedResult: {
-          lowerCase: false
-        }
-      });
-    });
 
     it('should suggest keywords for "SELECT row_number() OVER (| FROM testTable"', () => {
       assertAutoComplete({
@@ -1777,23 +1616,6 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
   });
 
   describe('Functions', () => {
-    it('should suggest tables for "SELECT COUNT(*) |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT COUNT(*) ',
-        afterCursor: '',
-        containsKeywords: ['AS', '+'],
-        expectedResult: {
-          lowerCase: false,
-          suggestTables: {
-            prependFrom: true
-          },
-          suggestDatabases: {
-            prependFrom: true,
-            appendDot: true
-          }
-        }
-      });
-    });
 
     it('should suggest keywords for "SELECT COUNT(foo |"', () => {
       assertAutoComplete({
@@ -1806,31 +1628,6 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
       });
     });
 
-    it('should suggest columns for "SELECT COUNT(foo, |) FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT COUNT(foo, ',
-        afterCursor: ') FROM bar;',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {},
-          suggestColumns: { source: 'select', tables: [{ identifierChain: [{ name: 'bar' }] }] }
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT COUNT(foo, bl|, bla) FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT COUNT(foo, bl',
-        afterCursor: ',bla) FROM bar;',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {},
-          suggestColumns: { source: 'select', tables: [{ identifierChain: [{ name: 'bar' }] }] }
-        }
-      });
-    });
 
     it('should suggest keywords for "SELECT COUNT(foo, bla |, bar)"', () => {
       assertAutoComplete({
@@ -1843,71 +1640,6 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
       });
     });
 
-    it('should suggest columns and values for "SELECT COUNT(foo, bl = |,bla) FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT COUNT(foo, bl = ',
-        afterCursor: ',bla) FROM bar;',
-        containsKeywords: ['CASE'],
-        hasErrors: false,
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: { types: ['COLREF'] },
-          suggestColumns: {
-            source: 'select',
-            types: ['COLREF'],
-            tables: [{ identifierChain: [{ name: 'bar' }] }]
-          },
-          suggestValues: {},
-          colRef: { identifierChain: [{ name: 'bar' }, { name: 'bl' }] }
-        }
-      });
-    });
-
-    it('should suggest columns and values for "SELECT bl = \'| FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: "SELECT bl = '",
-        afterCursor: ' FROM bar;',
-        hasErrors: false,
-        expectedResult: {
-          locations: [
-            {
-              type: 'statement',
-              location: { first_line: 1, last_line: 1, first_column: 1, last_column: 23 }
-            },
-            {
-              type: 'selectList',
-              missing: false,
-              location: { first_line: 1, last_line: 1, first_column: 8, last_column: 15 }
-            },
-            {
-              type: 'column',
-              location: { first_line: 1, last_line: 1, first_column: 8, last_column: 10 },
-              identifierChain: [{ name: 'bl' }],
-              tables: [{ identifierChain: [{ name: 'bar' }] }],
-              qualified: false
-            },
-            {
-              type: 'table',
-              location: { first_line: 1, last_line: 1, first_column: 20, last_column: 23 },
-              identifierChain: [{ name: 'bar' }]
-            },
-            {
-              type: 'whereClause',
-              missing: true,
-              location: { first_line: 1, last_line: 1, first_column: 23, last_column: 23 }
-            },
-            {
-              type: 'limitClause',
-              missing: true,
-              location: { first_line: 1, last_line: 1, first_column: 23, last_column: 23 }
-            }
-          ],
-          lowerCase: false,
-          suggestValues: { partialQuote: "'", missingEndQuote: true },
-          colRef: { identifierChain: [{ name: 'bar' }, { name: 'bl' }] }
-        }
-      });
-    });
 
     it('should suggest columns and values for "SELECT bl = \'|\' FROM bar;"', () => {
       assertAutoComplete({
@@ -2106,163 +1838,6 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
       });
     });
 
-    it('should suggest functions for "SELECT CAST(|"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(',
-        afterCursor: '',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {}
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT CAST(| FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(',
-        afterCursor: ' FROM bar;',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {},
-          suggestColumns: { source: 'select', tables: [{ identifierChain: [{ name: 'bar' }] }] }
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT CAST(bla| FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(bla',
-        afterCursor: ' FROM bar;',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {},
-          suggestColumns: { source: 'select', tables: [{ identifierChain: [{ name: 'bar' }] }] }
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT CAST(| AS FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(',
-        afterCursor: ' AS FROM bar;',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {},
-          suggestColumns: { source: 'select', tables: [{ identifierChain: [{ name: 'bar' }] }] }
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT CAST(| AS INT FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(',
-        afterCursor: ' AS INT FROM bar;',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {},
-          suggestColumns: { source: 'select', tables: [{ identifierChain: [{ name: 'bar' }] }] }
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT CAST(| AS STRING) FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(',
-        afterCursor: ' AS STRING) FROM bar;',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {},
-          suggestColumns: { source: 'select', tables: [{ identifierChain: [{ name: 'bar' }] }] }
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT CAST(bla| AS STRING) FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(bla',
-        afterCursor: ' AS STRING) FROM bar;',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {},
-          suggestColumns: { source: 'select', tables: [{ identifierChain: [{ name: 'bar' }] }] }
-        }
-      });
-    });
-
-    it('should suggest keywords for "SELECT CAST(bla |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(bla ',
-        afterCursor: '',
-        containsKeywords: ['AS', 'AND'],
-        expectedResult: {
-          lowerCase: false
-        }
-      });
-    });
-
-    it('should suggest keywords for "SELECT CAST(bla | FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(bla ',
-        afterCursor: ' FROM bar;',
-        containsKeywords: ['AS', '='],
-        containsColRefKeywords: true,
-        expectedResult: {
-          lowerCase: false,
-          colRef: { identifierChain: [{ name: 'bar' }, { name: 'bla' }] }
-        }
-      });
-    });
-
-    it('should suggest keywords for "select cast(bla as |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'select cast(bla as ',
-        afterCursor: '',
-        containsKeywords: ['INT', 'INTEGER', 'STRING'],
-        expectedResult: {
-          lowerCase: true
-        }
-      });
-    });
-
-    it('should suggest keywords for "SELECT CAST(bla AS | FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(bla AS ',
-        afterCursor: ' FROM bar;',
-        containsKeywords: ['INT', 'STRING'],
-        expectedResult: {
-          lowerCase: false
-        }
-      });
-    });
-
-    it('should suggest keywords for "SELECT CAST(bla AS ST|) FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(bla AS ST',
-        afterCursor: ') FROM bar;',
-        containsKeywords: ['INT', 'STRING'],
-        expectedResult: {
-          lowerCase: false
-        }
-      });
-    });
-
-    it('should suggest keywords for "SELECT CAST(AS |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(AS ',
-        afterCursor: '',
-        containsKeywords: ['INT', 'STRING'],
-        expectedResult: {
-          lowerCase: false
-        }
-      });
-    });
 
     it('should suggest handle "SELECT db.customUdf(col) FROM bar;"', () => {
       assertAutoComplete({
@@ -2368,140 +1943,58 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
       });
     });
 
-    it('should suggest keywords for "SELECT extract(| FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT extract( ',
-        afterCursor: ' FROM bar;',
-        expectedResult: {
-          lowerCase: false,
-          suggestKeywords: [
-            'DAY',
-            'DAYOFWEEK',
-            'HOUR',
-            'MINUTE',
-            'MONTH',
-            'QUARTER',
-            'SECOND',
-            'WEEK',
-            'YEAR'
-          ]
-        }
-      });
-    });
 
-    it('should suggest keywords for "SELECT extract(month | FROM bar"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT extract(month ',
-        afterCursor: ' FROM bar;',
-        expectedResult: {
-          lowerCase: false,
-          suggestKeywords: ['FROM']
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT extract(month FROM | FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT extract(month FROM ',
-        afterCursor: ' FROM bar;',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {},
-          suggestColumns: { source: 'select', tables: [{ identifierChain: [{ name: 'bar' }] }] }
-        }
-      });
-    });
-
-    it('should suggest keywords for "SELECT extract(| FROM boo) FROM bar;"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT extract( ',
-        afterCursor: ' FROM boo) FROM bar;',
-        expectedResult: {
-          lowerCase: false,
-          suggestKeywords: [
-            'DAY',
-            'DAYOFWEEK',
-            'HOUR',
-            'MINUTE',
-            'MONTH',
-            'QUARTER',
-            'SECOND',
-            'WEEK',
-            'YEAR'
-          ]
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT <GeneralSetFunction>(|) FROM testTable"', () => {
-      const aggregateFunctions = [
-        { name: 'AVG', containsKeywords: ['DISTINCT'] },
-        { name: 'collect_set', containsKeywords: ['DISTINCT'] },
-        { name: 'COLLECT_LIST', containsKeywords: ['DISTINCT'] },
-        { name: 'COUNT', containsKeywords: ['*', 'DISTINCT'] },
-        { name: 'STDDEV_POP', containsKeywords: ['DISTINCT'] },
-        { name: 'STDDEV_SAMP', containsKeywords: ['DISTINCT'] },
-        { name: 'sum', containsKeywords: ['DISTINCT'] },
-        { name: 'MAX', containsKeywords: ['DISTINCT'] },
-        { name: 'MIN', containsKeywords: ['DISTINCT'] },
-        { name: 'VAR_POP', containsKeywords: ['DISTINCT'] },
-        { name: 'VAR_SAMP', containsKeywords: ['DISTINCT'] }
-      ];
-      aggregateFunctions.forEach(aggregateFunction => {
-        if (aggregateFunction.name === 'COUNT') {
-          assertAutoComplete({
-            beforeCursor: 'SELECT ' + aggregateFunction.name + '(',
-            afterCursor: ') FROM testTable',
-            containsKeywords: aggregateFunction.containsKeywords.concat(['*', 'CASE']),
-            expectedResult: {
-              lowerCase: false,
-              suggestFunctions: {},
-              suggestColumns: {
-                source: 'select',
-                tables: [{ identifierChain: [{ name: 'testTable' }] }]
-              }
-            }
-          });
-        } else {
-          const expectedResult = {
-            lowerCase: false,
-            suggestFunctions: {},
-            suggestColumns: {
-              source: 'select',
-              tables: [{ identifierChain: [{ name: 'testTable' }] }]
-            },
-            udfArgument: {
-              name: aggregateFunction.name.toLowerCase(),
-              position: 1
-            }
-          };
-          assertAutoComplete({
-            beforeCursor: 'SELECT ' + aggregateFunction.name + '(',
-            afterCursor: ') FROM testTable',
-            containsKeywords: aggregateFunction.containsKeywords.concat(['CASE']),
-            expectedResult: expectedResult
-          });
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT id, SUM(a * | FROM testTable"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT id, SUM(a * ',
-        afterCursor: ' FROM testTable',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: { types: ['NUMBER'] },
-          suggestColumns: {
-            source: 'select',
-            types: ['NUMBER'],
-            tables: [{ identifierChain: [{ name: 'testTable' }] }]
-          }
-        }
-      });
-    });
+    // it('should suggest columns for "SELECT <GeneralSetFunction>(|) FROM testTable"', () => {
+    //   const aggregateFunctions = [
+    //     { name: 'AVG', containsKeywords: ['DISTINCT'] },
+    //     { name: 'collect_set', containsKeywords: ['DISTINCT'] },
+    //     { name: 'COLLECT_LIST', containsKeywords: ['DISTINCT'] },
+    //     { name: 'COUNT', containsKeywords: ['*', 'DISTINCT'] },
+    //     { name: 'STDDEV_POP', containsKeywords: ['DISTINCT'] },
+    //     { name: 'STDDEV_SAMP', containsKeywords: ['DISTINCT'] },
+    //     { name: 'sum', containsKeywords: ['DISTINCT'] },
+    //     { name: 'MAX', containsKeywords: ['DISTINCT'] },
+    //     { name: 'MIN', containsKeywords: ['DISTINCT'] },
+    //     { name: 'VAR_POP', containsKeywords: ['DISTINCT'] },
+    //     { name: 'VAR_SAMP', containsKeywords: ['DISTINCT'] }
+    //   ];
+    //   aggregateFunctions.forEach(aggregateFunction => {
+    //     if (aggregateFunction.name === 'COUNT') {
+    //       assertAutoComplete({
+    //         beforeCursor: 'SELECT ' + aggregateFunction.name + '(',
+    //         afterCursor: ') FROM testTable',
+    //         containsKeywords: aggregateFunction.containsKeywords.concat(['*', 'CASE']),
+    //         expectedResult: {
+    //           lowerCase: false,
+    //           suggestFunctions: {},
+    //           suggestColumns: {
+    //             source: 'select',
+    //             tables: [{ identifierChain: [{ name: 'testTable' }] }]
+    //           }
+    //         }
+    //       });
+    //     } else {
+    //       const expectedResult = {
+    //         lowerCase: false,
+    //         suggestFunctions: {},
+    //         suggestColumns: {
+    //           source: 'select',
+    //           tables: [{ identifierChain: [{ name: 'testTable' }] }]
+    //         },
+    //         udfArgument: {
+    //           name: aggregateFunction.name.toLowerCase(),
+    //           position: 1
+    //         }
+    //       };
+    //       assertAutoComplete({
+    //         beforeCursor: 'SELECT ' + aggregateFunction.name + '(',
+    //         afterCursor: ') FROM testTable',
+    //         containsKeywords: aggregateFunction.containsKeywords.concat(['CASE']),
+    //         expectedResult: expectedResult
+    //       });
+    //     }
+    //   });
+    // });
 
     it('should suggest columns for "SELECT CASE | FROM testTable"', () => {
       assertAutoComplete({
@@ -4211,17 +3704,6 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
         }
       });
     });
-    it('should suggest keywords for "SELECT cast(\'1\' AS |"', () => {
-      assertAutoComplete({
-        beforeCursor: "SELECT cast('1' AS ",
-        afterCursor: '',
-        containsKeywords: ['BIGINT', 'DATE'],
-        doesNotContainKeywords: ['REAL'],
-        expectedResult: {
-          lowerCase: false
-        }
-      });
-    });
 
     it('should suggest columns for "SELECT cos(| FROM testTable"', () => {
       assertAutoComplete({
@@ -4358,40 +3840,6 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
           udfArgument: {
             name: 'log',
             position: 3
-          }
-        }
-      });
-    });
-
-    it('should suggest columns for "SELECT cast(a AS BIGINT) = | FROM testTable"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT cast(a AS BIGINT) = ',
-        afterCursor: ' FROM testTable',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: { types: ['BIGINT'] },
-          suggestColumns: {
-            source: 'select',
-            types: ['BIGINT'],
-            tables: [{ identifierChain: [{ name: 'testTable' }] }]
-          }
-        }
-      });
-    });
-
-    it('should suggest typed columns for "SELECT CAST(18446744073709001000BD AS DECIMAL(38,0)) = | FROM testTable"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT CAST(18446744073709001000BD AS DECIMAL(38,0)) = ',
-        afterCursor: ' FROM testTable',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: { types: ['DECIMAL'] },
-          suggestColumns: {
-            source: 'select',
-            types: ['DECIMAL'],
-            tables: [{ identifierChain: [{ name: 'testTable' }] }]
           }
         }
       });
@@ -5856,23 +5304,6 @@ describe('databricksAutocompleteParser.js SELECT statements', () => {
             }
           }
         });
-      });
-    });
-  });
-
-  describe('HAVING clause', () => {
-    it('should suggest identifiers for "SELECT COUNT(*) AS boo FROM testTable GROUP BY baa HAVING |"', () => {
-      assertAutoComplete({
-        beforeCursor: 'SELECT COUNT(*) AS boo FROM testTable GROUP BY baa HAVING ',
-        afterCursor: '',
-        containsKeywords: ['CASE'],
-        expectedResult: {
-          lowerCase: false,
-          suggestFunctions: {},
-          suggestAggregateFunctions: { tables: [{ identifierChain: [{ name: 'testTable' }] }] },
-          suggestColumns: { tables: [{ identifierChain: [{ name: 'testTable' }] }] },
-          suggestColumnAliases: [{ name: 'boo', udfRef: 'count', types: ['UDFREF'] }]
-        }
       });
     });
   });

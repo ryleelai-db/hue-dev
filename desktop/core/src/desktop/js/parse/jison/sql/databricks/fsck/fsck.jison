@@ -14,41 +14,54 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-DataManipulation
- : DeleteStatement
+DataDefinition
+ : Fsck
  ;
 
-DataManipulation_EDIT
- : DeleteStatement_EDIT
+DataDefinition_EDIT
+ : Fsck_EDIT
  ;
 
-DeleteStatement
- : 'DELETE' 'FROM' SchemaQualifiedTableIdentifier OptionalWhereClause
+Fsck
+ : 'FSCK' OptionalRepair 'TABLE' SchemaQualifiedTableIdentifier OptionalDryRun
    {
-     parser.addTablePrimary($3);
+     parser.addTablePrimary($4);
    }
  ;
 
-DeleteStatement_EDIT
- : 'DELETE' 'CURSOR'
+Fsck_EDIT
+ : 'FSCK' OptionalRepair 'CURSOR'
    {
-     parser.suggestKeywords(['FROM']);
-   }
- | 'DELETE' 'FROM' 'CURSOR'
-   {
-     parser.suggestTables();
-     parser.suggestDatabases({ appendDot: true });
-   }
- | 'DELETE' 'FROM' SchemaQualifiedTableIdentifier 'CURSOR' OptionalWhereClause
-   {
-     parser.addTablePrimary($3);
-     if (!$5) {
-       parser.suggestKeywords(['AS', 'WHERE']);
+     if (!$2) {
+       parser.suggestKeywords(['TABLE', 'REPAIR TABLE']);
+     } else {
+       parser.suggestKeywords(['TABLE']);
      }
    }
- | 'DELETE' 'FROM' SchemaQualifiedTableIdentifier_EDIT OptionalWhereClause
- | 'DELETE' 'FROM' SchemaQualifiedTableIdentifier WhereClause_EDIT
+ | 'FSCK' OptionalRepair 'TABLE' 'CURSOR'
    {
-     parser.addTablePrimary($3);
+     parser.suggestTables({ onlyTables: true });
+     parser.suggestDatabases({ appendDot: true });
+   }
+ | 'FSCK' OptionalRepair 'TABLE' SchemaQualifiedTableIdentifier_EDIT OptionalDryRun
+   {
+     if (parser.yy.result.suggestTables) {
+       parser.yy.result.suggestTables.onlyViews = true;
+     }
+   }
+ ;
+
+OptionalDryRun
+ :
+ | 'DRY' 'RUN'
+   {
+     parser.yy.correlatedSubQuery = false;
+   }
+ ;
+
+OptionalDryRun_EDIT
+ : 'DRY' 'RUN'
+   {
+     parser.suggestKeywords(['DRY RUN']);
    }
  ;

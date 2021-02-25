@@ -54,7 +54,7 @@ describe('databricksAutocompleteParser.js GRANT statements', () => {
         beforeCursor: '',
         afterCursor: '',
         noErrors: true,
-        containsKeywords: ['ADD'],
+        containsKeywords: ['LIST'],
         expectedResult: {
           lowerCase: false
         }
